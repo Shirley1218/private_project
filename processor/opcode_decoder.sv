@@ -7,36 +7,87 @@ module opcode_decoder(
 	input [4:0] opcode,
 	
 	// output signals
-	output ALUOp,
-	output RegWrite,
-	output MemWrite,
-	output ALUSrc,
-	output RegSel,
-	output MemRd,
-	output Mem2Reg,
-	output Branch
+	output ALUOp,// 0 for add, 1 for sub
+	output RegWrite,// write enable to regitor files
+	output MemWrite, // write enable to mem
+	output ALUSrc,//0 for rd2, 1 for imm_ext
+	output RegDst,// 0 for Rx, 1 for R7
+	output [2:0] WBSrc,//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
+	output [1:0] PCSrc,//00 for br, 01 for rind, 10 for pc+2  
+	output ExtSel, //0 for imm8, 1 for imm11
+	output NZ, //should update NZ
 );
 
-	always_comb begin
-    case(opcode[3:0])
-        OP_MV:  
-        OP_ADD:
-        OP_SUB:
-        OP_CMP:
-        OP_LD:  
-        OP_ST:  
-        OP_MVI:
-		  OP_SUBI:
-		  OP_COMPI:
-        OP_JR:
-        OP_JNR:
-        OP_JZR:
-        OP_J:
-		  OP_JZ:
-		  OP_JN:
-		  OP_CALL:
+always_comb begin
+    case(opcode)
+        5'b00000: begin//mv
+            ALUOp = 1'bx;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'bx;
+			RegDst = 1'b0;
+			WBSrc = 3'b011;
+			PCSrc = 2'b10;
+			ExtSel = 1'bx;
+			NZ = 1'b0;
+        end
+        5'b00001:begin//add
+            ALUOp = 1'b0;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b0;
+			RegDst = 1'b0;
+			WBSrc = 3'b001;
+			PCSrc = 2'b10;
+			ExtSel = 1'bx;
+			NZ = 1'b0;
+        end
+        // 5'b00010:begin//sub
+        // end
+        // 5'b00011:begin//cmp
+        // end
+        // 5'b00100:begin//ld
+        // end
+        // 5'b00101:begin//st
+        // end
+        // 5'b10000:begin//mvi
+        // end
+        // 5'b10001:begin//addi
+        // end
+        // 5'b10010:begin//subi
+        // end
+        // 5'b10011:begin//cmpi
+        // end
+        // 5'b10110:begin//mvhi
+        // end
+        // 5'b01000:begin//jr
+        // end
+        // 5'b01001:begin//jzr
+        // end
+        // 5'b01010:begin//jnr
+        // end
+        // 5'b01100:begin//callr
+        // end
+        // 5'b11000:begin//j
+        // end
+        // 5'b11001:begin//jz
+        // end
+        // 5'b11010:begin//jn
+        // end
+        // 5'b11100:begin//call
+
+        // end
         default:
-    endcase  
+			ALUOp = 1'b0;
+			RegWrite = 1'b0;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b0;
+			RegDst = 1'b0;
+			WBSrc = 3'b001;
+			PCSrc = 2'b10;
+			ExtSel = 1'bx;
+			NZ = 1'b0;
+    endcase
     
 end
 endmodule

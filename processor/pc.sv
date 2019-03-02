@@ -3,7 +3,7 @@ module pc (
     input reset,
     input enable,
     input branch,
-	 input [15:0] branch_addr,
+	input [15:0] branch_addr,
     output logic [15:0] pc_out
 );
 

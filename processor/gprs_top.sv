@@ -9,7 +9,7 @@ module gprs_top(
 	input [2:0] rs1, // read register 1
 	input [2:0] rs2, // read register 2
 	input [2:0] ws,  // write register
-	input 		wd,  // write data
+	input [15:0] wd,  // write data
 	
 	
 	// output ports
@@ -35,7 +35,7 @@ module gprs_top(
 	genvar i;
 	generate 
 		for (i=0;i<8;i++) begin
-			always_ff @(posedge clk) begin
+			always_ff @(posedge clk or posedge reset) begin
 				if(reset) begin
 					regfile[i] <= 0;
 				end 
