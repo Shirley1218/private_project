@@ -118,6 +118,7 @@ always_comb begin
 			PCSrc = 2'b10;
 			ExtSel = 1'bx;
 			NZ = 1'b0;
+			BSrc = 1'b0;
 			mem_sel = 1'b0;
 			pc_enable = 1'b1;
 		end
