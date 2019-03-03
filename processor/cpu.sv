@@ -119,4 +119,9 @@ alu_16 my_alu(
     .neg(neg)
 );
 
+sign_ext imm8_(
+	.in(i_mem_rddata[15:8]),
+	.out(imm_ext)
+);
+
 endmodule
