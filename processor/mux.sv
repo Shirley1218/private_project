@@ -50,7 +50,7 @@ module five_one_mux
 			3'b001 : mux_out = data_in2;
 			3'b010 : mux_out = data_in3;
 			3'b011 : mux_out = data_in4;
-			3'b100: mux_out = data_in5;
+			3'b100 : mux_out = data_in5;
 			default: mux_out = 16'd0;
 		endcase 
 	end 

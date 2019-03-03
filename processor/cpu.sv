@@ -16,7 +16,7 @@ module cpu(
 logic [2:0] ws;
 logic [4:0] opcode;
 logic ALUOp;// 0 for add, 1 for sub
-logic RegWrite;// write enable to regitor files
+wire RegWrite;// write enable to regitor files
 logic MemWrite; // write enable to mem
 logic ALUSrc;//0 for rd2, 1 for imm_ext
 logic RegDst;// 0 for Rx, 1 for R7
@@ -24,13 +24,14 @@ logic [2:0] WBSrc;//000 for memory, 001 for alu output, 010 for pc+2, 011 for [R
 logic [1:0] PCSrc;//00 for br, 01 for rind, 10 for pc+2  
 logic ExtSel; //0 for imm8, 1 for imm11
 logic NZ; //should update NZ
-logic we;
 logic pc_enable;
 logic BSrc;// 0 for rd2, 1 for imm_ext
 logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
+
 logic fetch;
-reg zero, neg;
+logic alu_zero, alu_neg;
+reg zero,neg;
 
 assign ws = RegDst ? 3'b111 : i_mem_rddata[7:5] ;
 logic [2:0] rs1,rs2;
@@ -127,8 +128,8 @@ alu_16 my_alu(
     .data_in_b(BSrc ? imm_ext : rd2),
     .sub(ALUOp),
     .alu_out(alu_out),
-    .zero(zero),
-    .neg(neg)
+    .zero(alu_zero),
+    .neg(alu_neg)
 );
 
 logic [7:0] imm;
@@ -139,4 +140,19 @@ sign_ext imm8_(
 	.out(imm_ext)
 );
 
+
+always_ff @ (posedge clk or posedge reset) begin
+	if(reset) begin
+		zero <= 1'b0;
+		neg <= 1'b0;
+	end
+	else if(NZ)begin
+		zero <= alu_zero;
+		neg <= alu_neg;
+	end
+	else begin
+		zero <= zero;
+		neg <= neg;
+	end
+end
 endmodule

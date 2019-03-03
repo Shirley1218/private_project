@@ -51,10 +51,34 @@ always_comb begin
 			BSrc = 1'b0;
 			pc_enable = 1'b1;
         end
-        // 5'b00010:begin//sub
-        // end
-        // 5'b00011:begin//cmp
-        // end
+        5'b00010:begin//sub
+			ALUOp = 1'b1;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b0;
+			RegDst = 1'b0;
+			WBSrc = 3'b001;
+			PCSrc = 2'b10;
+			ExtSel = 1'bx;
+			NZ = 1'b0;
+			mem_sel = 1'b0;
+			BSrc = 1'b0;
+			pc_enable = 1'b1;
+        end
+        5'b00011:begin//cmp
+			ALUOp = 1'b1;
+			RegWrite = 1'b0;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b0;
+			RegDst = 1'b0;
+			WBSrc = 3'b100;
+			PCSrc = 2'b10;
+			ExtSel = 1'b0;
+			NZ = 1'b1;
+			mem_sel = 1'b0;
+			BSrc = 1'b0;
+			pc_enable = 1'b1;
+        end
         // 5'b00100:begin//ld
         // end
         // 5'b00101:begin//st
@@ -70,14 +94,52 @@ always_comb begin
 			ExtSel = 1'b0;
 			NZ = 1'b0;
 			mem_sel = 1'b1;
+			//mem_sel = 1'b0;
+			BSrc = 1'b0;
 			pc_enable = 1'b1;
         end
-        // 5'b10001:begin//addi
-        // end
-        // 5'b10010:begin//subi
-        // end
-        // 5'b10011:begin//cmpi
-        // end
+        5'b10001:begin//addi
+			ALUOp = 1'b0;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b1;
+			RegDst = 1'b0;
+			WBSrc = 3'b001;
+			PCSrc = 2'b10;
+			ExtSel = 1'b0;
+			NZ = 1'b1;
+			mem_sel = 1'b0;
+			BSrc = 1'b1;
+			pc_enable = 1'b1;
+        end
+        5'b10010:begin//subi
+			ALUOp = 1'b1;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b1;
+			RegDst = 1'b0;
+			WBSrc = 3'b001;
+			PCSrc = 2'b10;
+			ExtSel = 1'b0;
+			NZ = 1'b1;
+			mem_sel = 1'b0;
+			BSrc = 1'b1;
+			pc_enable = 1'b1;
+        end
+        5'b10011:begin//cmpi
+			ALUOp = 1'b1;
+			RegWrite = 1'b0;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b1;
+			RegDst = 1'b0;
+			WBSrc = 3'b001;
+			PCSrc = 2'b10;
+			ExtSel = 1'b0;
+			NZ = 1'b1;
+			mem_sel = 1'b0;
+			BSrc = 1'b1;
+			pc_enable = 1'b1;
+        end
         // 5'b10110:begin//mvhi
         // end
         // 5'b01000:begin//jr
