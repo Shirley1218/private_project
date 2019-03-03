@@ -30,6 +30,7 @@ logic BSrc;// 0 for rd2, 1 for imm_ext
 logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
 
+logic fetch;
 reg zero, neg;
 
 assign ws = RegDst ? 3'b111 : i_mem_rddata[7:5] ;
@@ -68,9 +69,17 @@ pc my_pc(
 
 
 assign o_mem_addr = mem_sel ? rd2 : pc_out;
+ 
+assign o_mem_addr = (fetch & !mem_sel) ? rd2 : pc_out;
 assign o_mem_rd = 1'b1;// shall we always read from memory?
 assign br = pc_out + imm_ext;
 assign opcode = i_mem_rddata[4:0];
+
+non_pipelined_state fsm(
+	.clk(clk),
+    .reset(reset),
+    .fetch(fetch)
+);
 
 opcode_decoder my_control(
 
