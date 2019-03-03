@@ -14,7 +14,7 @@ module cpu(
 
 
 logic [2:0] ws;
-logic [4:0] opcode,
+logic [4:0] opcode;
 logic ALUOp;// 0 for add, 1 for sub
 logic RegWrite;// write enable to regitor files
 logic MemWrite; // write enable to mem
@@ -26,9 +26,15 @@ logic ExtSel; //0 for imm8, 1 for imm11
 logic NZ; //should update NZ
 logic we;
 logic pc_enable;
+logic BSrc;// 0 for rd2, 1 for imm_ext
 logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
-module gprs_top(
+
+reg zero, neg;
+
+assign ws = RegDst ? 3'b111 : i_mem_rddata[10:8] ;
+
+gprs_top gprs(
 
 	.clk(clk),
 	.reset(reset),
@@ -57,6 +63,7 @@ pc my_pc(
 	.pc_nxt(pc_nxt)
 );
 
+
 assign o_mem_addr = mem_sel ? rd2 : pc_out;
 assign o_mem_rd = 1'b1;// shall we always read from memory?
 assign br = pc_out + imm_ext;
@@ -76,11 +83,12 @@ opcode_decoder my_control(
 	.PCSrc(PCSrc),//00 for br, 01 for rind, 10 for pc+2  
 	.ExtSel(ExtSel), //0 for imm8, 1 for imm11
 	.NZ(NZ), //should update NZ
-	.mem_sel(mem_sel)
+	.mem_sel(mem_sel),
+	.BSrc(BSrc)
 );
 
 
-5_1mux sel_to_wd
+five_one_mux sel_to_wd
 (
 	.data_in1(i_mem_rddata),
 	.data_in2(alu_out),
@@ -92,7 +100,7 @@ opcode_decoder my_control(
 );
 
 
-4_1mux sel_to_pc
+four_one_mux sel_to_pc
 (
 	.data_in1(br),
 	.data_in2(rd1),
@@ -103,11 +111,12 @@ opcode_decoder my_control(
 );
 
 alu_16 my_alu(
-    input [15:0] data_in_a,
-    input [15:0] data_in_b,
+    .data_in_a(rd1),
+    .data_in_b(BSrc ? imm_ext : rd2),
     .sub(ALUOp),
     .alu_out(alu_out),
-    output logic zero,
-    output logic neg
+    .zero(zero),
+    .neg(neg)
 );
+
 endmodule

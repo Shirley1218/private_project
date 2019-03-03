@@ -90,7 +90,7 @@ module ram_decoder
 	)
 	(
 	input  [IN_WIDTH-1:0]		i_addr,
-	output [OUT_WIDTH-1:0] 		o_addr
+	output logic [OUT_WIDTH-1:0] 		o_addr
 	);
 
 	always_comb begin

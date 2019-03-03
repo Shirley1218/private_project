@@ -7,16 +7,16 @@ module opcode_decoder(
 	input [4:0] opcode,
 	
 	// output signals
-	output ALUOp,// 0 for add, 1 for sub
-	output RegWrite,// write enable to regitor files
-	output MemWrite, // write enable to mem
-	output ALUSrc,//0 for rd2, 1 for imm_ext
-	output RegDst,// 0 for Rx, 1 for R7
-	output [2:0] WBSrc,//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
-	output [1:0] PCSrc,//00 for br, 01 for rind, 10 for pc+2  
-	output ExtSel, //0 for imm8, 1 for imm11
-	output NZ, //should update NZ
-	output mem_sel //0 for reading instruction, 1 for reading other memory
+	output logic ALUOp,// 0 for add, 1 for sub
+	output logic RegWrite,// write enable to regitor files
+	output logic MemWrite, // write enable to mem
+	output logic ALUSrc,//0 for rd2, 1 for imm_ext
+	output logic RegDst,// 0 for Rx, 1 for R7
+	output logic [2:0] WBSrc,//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
+	output logic [1:0] PCSrc,//00 for br, 01 for rind, 10 for pc+2  
+	output logic ExtSel, //0 for imm8, 1 for imm11
+	output logic NZ, //should update NZ
+	output logic mem_sel //0 for reading instruction, 1 for reading other memory
 );
 
 always_comb begin
@@ -80,7 +80,7 @@ always_comb begin
         // 5'b11100:begin//call
 
         // end
-        default:
+        default: begin
 			ALUOp = 1'b0;
 			RegWrite = 1'b0;
 			MemWrite = 1'b0;
@@ -90,6 +90,7 @@ always_comb begin
 			PCSrc = 2'b10;
 			ExtSel = 1'bx;
 			NZ = 1'b0;
+		end
     endcase
     
 end

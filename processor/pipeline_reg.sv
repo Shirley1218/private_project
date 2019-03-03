@@ -1,5 +1,4 @@
-module pipeline_reg 
-#( paramater DATA_WIDTH = 16 )
+module pipeline_reg #( parameter DATA_WIDTH = 16 )
 (
     input clk,
     input reset,

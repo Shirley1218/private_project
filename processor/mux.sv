@@ -1,24 +1,24 @@
-module 2_1mux
-#( paramater DATA_WIDTH = 16 )
+module two_one_mux
+#( parameter DATA_WIDTH = 16 )
 (
 	input [DATA_WIDTH-1:0] data_in1,
 	input [DATA_WIDTH-1:0] data_in2,
 	input		  sel,
-	output [DATA_WIDTH-1:0] mux_out 
+	output logic [DATA_WIDTH-1:0] mux_out 
 );
 	assign mux_out = (sel) ? data_in1 : data_in2;
 	
 endmodule
 
-module 4_1mux
-#( paramater DATA_WIDTH = 16 )
+module four_one_mux
+#( parameter DATA_WIDTH = 16 )
 (
 	input [DATA_WIDTH-1:0] data_in1,
 	input [DATA_WIDTH-1:0] data_in2,
 	input [DATA_WIDTH-1:0] data_in3,
 	input [DATA_WIDTH-1:0] data_in4,
 	input	[1:0]	  sel,
-	output [DATA_WIDTH-1:0] mux_out 
+	output logic [DATA_WIDTH-1:0] mux_out 
 );
 
 	always_comb begin
@@ -32,8 +32,8 @@ module 4_1mux
 	
 endmodule
 
-module 5_1mux
-#( paramater DATA_WIDTH = 16 )
+module five_one_mux
+#( parameter DATA_WIDTH = 16 )
 (
 	input [DATA_WIDTH-1:0] data_in1,
 	input [DATA_WIDTH-1:0] data_in2,
@@ -41,7 +41,7 @@ module 5_1mux
 	input [DATA_WIDTH-1:0] data_in4,
 	input [DATA_WIDTH-1:0] data_in5,
 	input	[2:0]	  sel,
-	output [DATA_WIDTH-1:0] mux_out 
+	output logic [DATA_WIDTH-1:0] mux_out 
 );
 
 	always_comb begin
@@ -51,7 +51,7 @@ module 5_1mux
 			2'b010 : mux_out = data_in3;
 			2'b011 : mux_out = data_in4;
 			2'b011 : mux_out = data_in5;
-			default: mux_out = DATA_WIDTH'd0;
+			default: mux_out = 16'd0;
 		endcase 
 	end 
 	
