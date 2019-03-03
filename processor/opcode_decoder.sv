@@ -16,6 +16,7 @@ module opcode_decoder(
 	output [1:0] PCSrc,//00 for br, 01 for rind, 10 for pc+2  
 	output ExtSel, //0 for imm8, 1 for imm11
 	output NZ, //should update NZ
+	output mem_sel //0 for reading instruction, 1 for reading other memory
 );
 
 always_comb begin
@@ -30,6 +31,7 @@ always_comb begin
 			PCSrc = 2'b10;
 			ExtSel = 1'bx;
 			NZ = 1'b0;
+			mem_sel = 1'b0;
         end
         5'b00001:begin//add
             ALUOp = 1'b0;
@@ -41,6 +43,7 @@ always_comb begin
 			PCSrc = 2'b10;
 			ExtSel = 1'bx;
 			NZ = 1'b0;
+			mem_sel = 1'b0;
         end
         // 5'b00010:begin//sub
         // end
