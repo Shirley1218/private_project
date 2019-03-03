@@ -16,7 +16,7 @@ module opcode_decoder(
 	output logic [1:0] PCSrc,//00 for br, 01 for rind, 10 for pc+2  
 	output logic ExtSel, //0 for imm8, 1 for imm11
 	output logic NZ, //should update NZ
-	output logic mem_sel, //0 for reading instruction, 1 for reading other memory
+	output logic mem_sel, //1 for reading instruction, 1 for reading other memory
 	output logic BSrc,
 	output logic pc_enable
 );
@@ -93,7 +93,7 @@ always_comb begin
 			PCSrc = 2'b10;
 			ExtSel = 1'b0;
 			NZ = 1'b0;
-			mem_sel = 1'b1;
+			mem_sel = 1'b0;
 			//mem_sel = 1'b0;
 			BSrc = 1'b0;
 			pc_enable = 1'b1;
@@ -160,7 +160,7 @@ always_comb begin
 			PCSrc = 2'b0;
 			ExtSel = 1'b0;
 			NZ = 1'b0;
-			mem_sel = 1'b1;
+			mem_sel = 1'b0;
 			pc_enable = 1'b1;
         end
         // 5'b11001:begin//jz
