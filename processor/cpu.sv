@@ -33,6 +33,9 @@ logic mem_sel;//0 for reading instruction, 1 for reading other memory
 reg zero, neg;
 
 assign ws = RegDst ? 3'b111 : i_mem_rddata[10:8] ;
+logic [2:0] rs1,rs2;
+assign rs1 = i_mem_rddata[7:5];
+assign rs2 = i_mem_rddata[10:8];
 
 gprs_top gprs(
 
@@ -40,8 +43,8 @@ gprs_top gprs(
 	.reset(reset),
 	
 	// input ports
-	.rs1(i_mem_rddata[7:5]), // read register 1
-	.rs2(i_mem_rddata[10:8]), // read register 2
+	.rs1(rs1), // read register 1
+	.rs2(rs2), // read register 2
 	.ws(ws),  // write register
 	.wd(wd),  // write data
 	
@@ -67,11 +70,12 @@ pc my_pc(
 assign o_mem_addr = mem_sel ? rd2 : pc_out;
 assign o_mem_rd = 1'b1;// shall we always read from memory?
 assign br = pc_out + imm_ext;
+assign opcode = i_mem_rddata[4:0];
 
 opcode_decoder my_control(
 
 	//input opcode
-	.opcode(i_mem_rddata[4:0]),
+	.opcode(opcode),
 	
 	// output signals
 	.ALUOp(ALUOp),// 0 for add, 1 for sub
@@ -84,13 +88,15 @@ opcode_decoder my_control(
 	.ExtSel(ExtSel), //0 for imm8, 1 for imm11
 	.NZ(NZ), //should update NZ
 	.mem_sel(mem_sel),
-	.BSrc(BSrc)
+	.BSrc(BSrc),
+	.pc_enable(pc_enable)
 );
 
-
+logic [15:0] mem_in;
+assign mem_in = i_mem_rddata;
 five_one_mux sel_to_wd
 (
-	.data_in1(i_mem_rddata),
+	.data_in1(mem_in),
 	.data_in2(alu_out),
 	.data_in3(pc_nxt),
 	.data_in4(rd2),
@@ -119,8 +125,11 @@ alu_16 my_alu(
     .neg(neg)
 );
 
+logic [7:0] imm;
+assign imm = i_mem_rddata[15:8];
+
 sign_ext imm8_(
-	.in(i_mem_rddata[15:8]),
+	.in(imm),
 	.out(imm_ext)
 );
 

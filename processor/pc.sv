@@ -6,8 +6,9 @@ module pc (
     output logic [15:0] pc_out,
     output [15:0] pc_nxt
 );
+
 assign pc_nxt = pc_out + 16'd2;
-always_ff @(posedge clk or reset) begin
+always_ff @(posedge clk or posedge reset) begin
     if(reset)
         pc_out <= 16'b0;
     else if(enable) begin
