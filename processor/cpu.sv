@@ -32,7 +32,7 @@ logic mem_sel;//0 for reading instruction, 1 for reading other memory
 
 reg zero, neg;
 
-assign ws = RegDst ? 3'b111 : i_mem_rddata[10:8] ;
+assign ws = RegDst ? 3'b111 : i_mem_rddata[7:5] ;
 logic [2:0] rs1,rs2;
 assign rs1 = i_mem_rddata[7:5];
 assign rs2 = i_mem_rddata[10:8];

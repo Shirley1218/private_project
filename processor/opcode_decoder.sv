@@ -69,7 +69,7 @@ always_comb begin
 			PCSrc = 2'b10;
 			ExtSel = 1'b0;
 			NZ = 1'b0;
-			mem_sel = 1'b0;
+			mem_sel = 1'b1;
 			pc_enable = 1'b1;
         end
         // 5'b10001:begin//addi
