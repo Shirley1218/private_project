@@ -98,15 +98,37 @@ opcode_decoder my_control(
 	.pc_enable(pc_enable)
 );
 
+
+logic [7:0] imm8;
+logic [15:0] imm_8_ext;
+assign imm8 = i_mem_rddata[15:8];
+logic [10:0] imm11;
+logic [15:0] imm_11_ext;
+assign imm11 = i_mem_rddata[15:5];
 logic [15:0] mem_in;
 assign mem_in = i_mem_rddata;
-five_one_mux sel_to_wd
+logic [15:0] mvhi_out;
+assign mvhi_out = {imm8,rd1[7:0]};
+
+sign_ext imm8_(
+	.in(imm8),
+	.out(imm_8_ext)
+);
+
+sign_ext #(11) imm11_ (
+	.in(imm11),
+	.out(imm_11_ext)
+);
+
+assign imm_ext = ExtSel ? imm_11_ext : imm_8_ext;
+six_one_mux sel_to_wd
 (
 	.data_in1(mem_in),
 	.data_in2(alu_out),
 	.data_in3(pc_nxt),
 	.data_in4(rd2),
 	.data_in5(imm_ext),
+	.data_in6(mvhi_out),
 	.sel(WBSrc),
 	.mux_out(wd)
 );
@@ -131,13 +153,9 @@ alu_16 my_alu(
     .neg(alu_neg)
 );
 
-logic [7:0] imm;
-assign imm = i_mem_rddata[15:8];
 
-sign_ext imm8_(
-	.in(imm),
-	.out(imm_ext)
-);
+
+
 
 
 always_ff @ (posedge clk or posedge reset) begin
@@ -154,4 +172,7 @@ always_ff @ (posedge clk or posedge reset) begin
 		neg <= neg;
 	end
 end
+
+
+
 endmodule

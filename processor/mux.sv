@@ -32,7 +32,7 @@ module four_one_mux
 	
 endmodule
 
-module five_one_mux
+module six_one_mux
 #( parameter DATA_WIDTH = 16 )
 (
 	input [DATA_WIDTH-1:0] data_in1,
@@ -40,6 +40,7 @@ module five_one_mux
 	input [DATA_WIDTH-1:0] data_in3,
 	input [DATA_WIDTH-1:0] data_in4,
 	input [DATA_WIDTH-1:0] data_in5,
+	input [DATA_WIDTH-1:0] data_in6,
 	input	[2:0]	  sel,
 	output logic [DATA_WIDTH-1:0] mux_out 
 );
@@ -51,6 +52,7 @@ module five_one_mux
 			3'b010 : mux_out = data_in3;
 			3'b011 : mux_out = data_in4;
 			3'b100 : mux_out = data_in5;
+			3'b101 : mux_out = data_in6;
 			default: mux_out = 16'd0;
 		endcase 
 	end 

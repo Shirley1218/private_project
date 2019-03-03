@@ -12,7 +12,7 @@ module opcode_decoder(
 	output logic MemWrite, // write enable to mem
 	output logic ALUSrc,//0 for rd2, 1 for imm_ext
 	output logic RegDst,// 0 for Rx, 1 for R7
-	output logic [2:0] WBSrc,//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
+	output logic [2:0] WBSrc,//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8, 101 for {imm8,[rx][7:0]}
 	output logic [1:0] PCSrc,//00 for br, 01 for rind, 10 for pc+2  
 	output logic ExtSel, //0 for imm8, 1 for imm11
 	output logic NZ, //should update NZ
@@ -140,8 +140,20 @@ always_comb begin
 			BSrc = 1'b1;
 			pc_enable = 1'b1;
         end
-        // 5'b10110:begin//mvhi
-        // end
+        5'b10110:begin//mvhi
+			ALUOp = 1'b0;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b0;
+			RegDst = 1'b0;
+			WBSrc = 3'b101;
+			PCSrc = 2'b10;
+			ExtSel = 1'b0;
+			NZ = 1'b0;
+			mem_sel = 1'b0;
+			BSrc = 1'b1;
+			pc_enable = 1'b1;
+        end
         // 5'b01000:begin//jr
         // end
         // 5'b01001:begin//jzr
