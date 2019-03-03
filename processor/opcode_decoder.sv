@@ -18,6 +18,7 @@ module opcode_decoder(
 	output logic NZ, //should update NZ
 	output logic mem_sel, //0 for reading instruction, 1 for reading other memory
 	output logic BSrc
+	output logic BSrc // 0 for imm_ext, 1 for rd2
 );
 
 always_comb begin
