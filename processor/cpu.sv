@@ -16,7 +16,7 @@ module cpu(
 logic [2:0] ws;
 logic [4:0] opcode;
 logic ALUOp;// 0 for add, 1 for sub
-logic RegWrite;// write enable to regitor files
+wire RegWrite;// write enable to regitor files
 logic MemWrite; // write enable to mem
 logic ALUSrc;//0 for rd2, 1 for imm_ext
 logic RegDst;// 0 for Rx, 1 for R7
@@ -24,7 +24,6 @@ logic [2:0] WBSrc;//000 for memory, 001 for alu output, 010 for pc+2, 011 for [R
 logic [1:0] PCSrc;//00 for br, 01 for rind, 10 for pc+2  
 logic ExtSel; //0 for imm8, 1 for imm11
 logic NZ; //should update NZ
-logic we;
 logic pc_enable;
 logic BSrc;// 0 for rd2, 1 for imm_ext
 logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
@@ -32,7 +31,7 @@ logic mem_sel;//0 for reading instruction, 1 for reading other memory
 
 reg zero, neg;
 
-assign ws = RegDst ? 3'b111 : i_mem_rddata[10:8] ;
+assign ws = RegDst ? 3'b111 : i_mem_rddata[7:5] ;
 logic [2:0] rs1,rs2;
 assign rs1 = i_mem_rddata[7:5];
 assign rs2 = i_mem_rddata[10:8];
