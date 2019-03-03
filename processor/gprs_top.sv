@@ -32,21 +32,28 @@ module gprs_top(
 	);
 	
 	// mem write
-	genvar i;
-	generate 
-		for (i=0;i<8;i++) begin
-			always_ff @(posedge clk or posedge reset) begin
-				if(reset) begin
-					regfile[i] <= 0;
-				end 
-				else begin	
-					if(ws_addr[i] & we)
-						regfile[i] <= wd;
-				end
-			end
+	// genvar i;
+	// generate 
+	// 	for (i=0;i<8;i++) begin
+	// 		always_ff @(posedge clk or posedge reset) begin
+	// 			if(reset) begin
+	// 				regfile[i] <= 0;
+	// 			end 
+	// 			else begin	
+	// 				if(ws_addr[i] & we)
+	// 					regfile[i] <= wd;
+	// 			end
+	// 		end
+	// 	end
+	// endgenerate
+	always_ff @(posedge clk or posedge reset) begin
+		if(reset) begin
+			regfile <= '{default:0};
+		end 
+		else if(we) begin	
+			regfile[ws] <= wd;
 		end
-	endgenerate
-
+	end
 
 	// mem read
 	

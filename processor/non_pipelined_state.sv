@@ -8,6 +8,7 @@ module non_pipelined_state(
 
 enum int unsigned
 {
+    IDLE,
     FETCH,
     STATE1,
     STATE2
@@ -15,7 +16,7 @@ enum int unsigned
 
 // Clocked always block for making state registers
 always_ff @ (posedge clk or posedge reset) begin
-	if (reset) state <= FETCH;
+	if (reset) state <= IDLE;
 	else state <= nextstate;
 end
 
@@ -23,6 +24,11 @@ always_comb begin
 	nextstate = state;
 	fetch = 1'b0;
 	case (state)
+        IDLE:
+            begin
+                fetch = 1'b0;
+                nextstate = FETCH;
+            end
 		FETCH:
             begin
                 fetch = 1'b1;

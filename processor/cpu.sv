@@ -68,7 +68,7 @@ pc my_pc(
 );
 
 assign o_mem_addr = mem_sel ? rd2 : pc_in;
-assign o_mem_rd = 1'b1;// shall we always read from memory?
+assign o_mem_rd = fetch ? 1'b1 : 1'b0; // todo: read from data mem
 assign br = pc_nxt + imm_ext * 2;
 assign opcode = i_mem_rddata[4:0];
 
