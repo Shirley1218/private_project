@@ -68,9 +68,9 @@ pc my_pc(
 );
 
  
-assign o_mem_addr = (fetch & !mem_sel) ? rd2 : pc_out;
+assign o_mem_addr = (fetch & !mem_sel) ? rd2 : pc_in;
 assign o_mem_rd = 1'b1;// shall we always read from memory?
-assign br = pc_out + imm_ext;
+assign br = pc_nxt + imm_ext * 2;
 assign opcode = i_mem_rddata[4:0];
 
 non_pipelined_state fsm(
