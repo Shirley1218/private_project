@@ -28,6 +28,7 @@ logic pc_enable; // enable pc_increment
 logic BSrc;// 0 for rd2, 1 for imm_ext
 logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
+logic [1:0] br_sel; // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
 
 logic fetch;
 logic alu_zero, alu_neg;
@@ -69,7 +70,6 @@ pc my_pc(
 
 assign o_mem_addr = mem_sel ? rd2 : pc_in;
 assign o_mem_rd = fetch ? 1'b1 : 1'b0; // todo: read from data mem
-assign br = pc_nxt + imm_ext * 2;
 assign opcode = i_mem_rddata[4:0];
 
 non_pipelined_state fsm(
@@ -95,7 +95,8 @@ opcode_decoder my_control(
 	.NZ(NZ), //should update NZ
 	.mem_sel(mem_sel),
 	.BSrc(BSrc),
-	.pc_enable(pc_enable)
+	.pc_enable(pc_enable),
+	.BrSrc(br_sel) // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
 );
 
 
@@ -132,6 +133,18 @@ six_one_mux sel_to_wd
 	.sel(WBSrc),
 	.mux_out(wd)
 );
+
+logic br_cond;
+four_one_mux #(1) sel_to_br
+(
+	.data_in1(1'b1),
+	.data_in2(zero),
+	.data_in3(neg),
+	.data_in4(), // not used
+	.sel(br_sel), // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
+	.mux_out(br_cond)
+);
+assign br = br_cond ? pc_nxt + imm_ext * 2 : pc_nxt; // branch to pc + imm if condition meet
 
 
 four_one_mux sel_to_pc
