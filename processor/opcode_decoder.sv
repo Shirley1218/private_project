@@ -16,7 +16,8 @@ module opcode_decoder(
 	output logic [1:0] PCSrc,//00 for br, 01 for rind, 10 for pc+2  
 	output logic ExtSel, //0 for imm8, 1 for imm11
 	output logic NZ, //should update NZ
-	output logic mem_sel //0 for reading instruction, 1 for reading other memory
+	output logic mem_sel, //0 for reading instruction, 1 for reading other memory
+	output logic BSrc
 );
 
 always_comb begin
@@ -32,6 +33,7 @@ always_comb begin
 			ExtSel = 1'bx;
 			NZ = 1'b0;
 			mem_sel = 1'b0;
+			BSrc = 1'b0;
         end
         5'b00001:begin//add
             ALUOp = 1'b0;
@@ -44,6 +46,7 @@ always_comb begin
 			ExtSel = 1'bx;
 			NZ = 1'b0;
 			mem_sel = 1'b0;
+			BSrc = 1'b0;
         end
         // 5'b00010:begin//sub
         // end
@@ -53,8 +56,18 @@ always_comb begin
         // end
         // 5'b00101:begin//st
         // end
-        // 5'b10000:begin//mvi
-        // end
+        5'b10000:begin//mvi
+			ALUOp = 1'b0;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b0;
+			RegDst = 1'b0;
+			WBSrc = 3'b100;
+			PCSrc = 2'b10;
+			ExtSel = 1'b0;
+			NZ = 1'b0;
+			mem_sel = 1'b0;
+        end
         // 5'b10001:begin//addi
         // end
         // 5'b10010:begin//subi
@@ -71,8 +84,18 @@ always_comb begin
         // end
         // 5'b01100:begin//callr
         // end
-        // 5'b11000:begin//j
-        // end
+        5'b11000:begin//j
+			ALUOp = 1'b0;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b0;
+			RegDst = 1'b0;
+			WBSrc = 3'b100;
+			PCSrc = 2'b10;
+			ExtSel = 1'b0;
+			NZ = 1'b0;
+			mem_sel = 1'b0;
+        end
         // 5'b11001:begin//jz
         // end
         // 5'b11010:begin//jn

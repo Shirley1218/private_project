@@ -27,7 +27,7 @@ logic NZ; //should update NZ
 logic we;
 logic pc_enable;
 logic BSrc;// 0 for rd2, 1 for imm_ext
-logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br;
+logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
 
 reg zero, neg;

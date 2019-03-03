@@ -1,7 +1,7 @@
 module tb();
 
 // Change this to use a different program!
-localparam HEX_FILE = "sum10.hex";
+localparam HEX_FILE = "mv_test.hex";
 
 // Create a 100MHz clock
 logic clk;
