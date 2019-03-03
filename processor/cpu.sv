@@ -24,7 +24,7 @@ logic [2:0] WBSrc;//000 for memory, 001 for alu output, 010 for pc+2, 011 for [R
 logic [1:0] PCSrc;//00 for br, 01 for rind, 10 for pc+2  
 logic ExtSel; //0 for imm8, 1 for imm11
 logic NZ; //should update NZ
-logic pc_enable; // unused
+logic pc_enable; // enable pc_increment
 logic BSrc;// 0 for rd2, 1 for imm_ext
 logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
@@ -61,7 +61,7 @@ gprs_top gprs(
 pc my_pc(
     .clk(clk),
     .reset(reset),
-    .enable(fetch),
+    .enable(fetch & pc_enable),
     .i_addr(pc_in),
     .pc_out(pc_out),
 	.pc_nxt(pc_nxt)

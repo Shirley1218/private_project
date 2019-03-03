@@ -161,7 +161,7 @@ always_comb begin
 			ExtSel = 1'b0;
 			NZ = 1'b0;
 			mem_sel = 1'b0;
-			pc_enable = 1'b1;
+			pc_enable = 1'b0;
         end
         // 5'b11001:begin//jz
         // end
@@ -177,7 +177,7 @@ always_comb begin
 			ALUSrc = 1'b0;
 			RegDst = 1'b0;
 			WBSrc = 3'b001;
-			PCSrc = 2'b10;
+			PCSrc = 2'b11;
 			ExtSel = 1'bx;
 			NZ = 1'b0;
 			BSrc = 1'b0;
