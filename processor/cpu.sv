@@ -25,7 +25,8 @@ logic [1:0] PCSrc;//00 for br, 01 for rind, 10 for pc+2
 logic ExtSel; //0 for imm8, 1 for imm11
 logic NZ; //should update NZ
 logic we;
-logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext;
+logic pc_enable;
+logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
 module gprs_top(
 
@@ -50,15 +51,15 @@ module gprs_top(
 pc my_pc(
     .clk(clk),
     .reset(reset),
-    input enable,
-    input branch,
-	input [15:0] branch_addr,
-    output logic [15:0] pc_out,
+    .enable(pc_enable),
+    .i_addr(pc_in),
+    .pc_out(pc_out),
 	.pc_nxt(pc_nxt)
 );
 
 assign o_mem_addr = mem_sel ? rd2 : pc_out;
 assign o_mem_rd = 1'b1;// shall we always read from memory?
+assign br = pc_out + imm_ext;
 
 opcode_decoder my_control(
 
@@ -90,6 +91,16 @@ opcode_decoder my_control(
 	.mux_out(wd)
 );
 
+
+4_1mux sel_to_pc
+(
+	.data_in1(br),
+	.data_in2(rd1),
+	.data_in3(pc_nxt),
+	.data_in4(16'd0),
+	.sel(PCSrc),
+	.mux_out(pc_in)
+);
 
 alu_16 my_alu(
     input [15:0] data_in_a,

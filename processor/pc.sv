@@ -2,16 +2,20 @@ module pc (
     input clk,
     input reset,
     input enable,
-    input branch,
-	input [15:0] branch_addr,
-    output logic [15:0] pc_out
+	input [15:0] i_addr,
+    output logic [15:0] pc_out,
+    output [15:0] pc_nxt
 );
-
-always_ff @(posedge clk) begin
+assign pc_nxt = pc_out + 16'd2;
+always_ff @(posedge clk or reset) begin
     if(reset)
         pc_out <= 16'b0;
-    else if(enable)
-        pc_out <= (branch) ? branch_addr : (pc_out + 2'd2);
+    else if(enable) begin
+        pc_out <= i_addr;
+    end
+    else begin
+        pc_out <= pc_out;
+    end
 end
 
 endmodule
