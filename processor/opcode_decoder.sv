@@ -229,8 +229,6 @@ always_comb begin
 			pc_enable = 1'b1;
 			BrCond = 2'b10;
         end
-        // 5'b01100:begin//callr
-        // end
         5'b11000:begin//j
 			ALUOp = 1'b0;
 			RegWrite = 1'b1;
@@ -243,7 +241,6 @@ always_comb begin
 			ExtSel = 1'b1;
 			NZ = 1'b0;
 			mem_sel = 1'b0;
-			pc_enable = 1'b1;
 			BrCond = 2'b0;
         end
         5'b11001:begin//jz
@@ -276,9 +273,6 @@ always_comb begin
 			pc_enable = 1'b1;
 			BrCond = 2'b10;
         end
-        // 5'b11100:begin//call
-
-        // end
         default: begin
 			ALUOp = 1'b0;
 			RegWrite = 1'b0;
