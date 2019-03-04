@@ -179,10 +179,7 @@ alu_16 my_alu(
 
 always_ff @ (posedge clk or posedge reset) begin
 	if(reset) begin
-		last_rx <= 2'b00;
-	end
-	else if (busy) begin
-		last_rx <= last_rx;
+		last_rx <= 3'b000;
 	end
 	else begin
 		last_rx <= i_mem_rddata[7:5];
