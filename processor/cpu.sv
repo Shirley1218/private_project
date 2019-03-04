@@ -32,6 +32,7 @@ logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
 logic [1:0] br_sel; // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
 logic br_cond;
+logic ld;
 
 logic fetch;
 logic alu_zero, alu_neg;
@@ -68,7 +69,7 @@ pc my_pc(
     .clk(clk),
     .reset(reset),
     .enable(pc_enable & br_cond), // enable branch , next pc_out = in + 2
-	.incr(fetch & (~busy)),
+	.incr(fetch & (~ld)),
     .i_addr(pc_in),
     .pc_out(pc_out)
 	//.pc_nxt(pc_nxt)
@@ -108,7 +109,8 @@ opcode_decoder my_control(
 	.pc_enable(pc_enable),
 	.fetch(fetch),
 	.BrCond(br_sel), // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
-	.busy(busy)
+	.busy(busy),
+	.ld(ld)
 );
 
 

@@ -23,7 +23,8 @@ module opcode_decoder(
 	output logic pc_enable,
 	output logic fetch,
 	output logic [1:0] BrCond,
-	output logic busy
+	output logic busy,
+	output logic ld
 );
 enum int unsigned
 {
@@ -34,7 +35,7 @@ enum int unsigned
 	STORE2
 } state, nextstate;
 
-logic ld, st;
+logic st;
 // Clocked always block for making state registers
 always_ff @ (posedge clk or posedge reset) begin
 	if (reset) state <= IDLE;
@@ -420,7 +421,7 @@ always_comb begin
 		ExtSel = 1'bx;
 		NZ = 1'b0;
 		BSrc = 1'b0;
-		mem_sel = 1'b1;
+		mem_sel = 1'b0;
 		pc_enable = 1'b0;
 		ld = 1'b0;
 		st = 1'b0;
