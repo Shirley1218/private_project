@@ -21,14 +21,16 @@ logic MemWrite; // write enable to mem
 logic ALUSrc;//0 for rd2, 1 for imm_ext
 logic RegDst;// 0 for Rx, 1 for R7
 logic [2:0] WBSrc;//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
-logic [1:0] PCSrc;//00 for br, 01 for rind, 10 for pc+2  
+logic PCSrc; //0 for br 1 for pc+2  
+logic BrSrc; // 0 for rd1, 1 for pc + offset  
 logic ExtSel; //0 for imm8, 1 for imm11
 logic NZ; //should update NZ
-logic pc_enable; // enable pc_increment
+logic pc_enable; // enable pc jump
 logic BSrc;// 0 for rd2, 1 for imm_ext
 logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
 logic [1:0] br_sel; // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
+logic br_cond;
 
 logic fetch;
 logic alu_zero, alu_neg;
@@ -62,13 +64,15 @@ gprs_top gprs(
 pc my_pc(
     .clk(clk),
     .reset(reset),
-    .enable(fetch & pc_enable),
+    .enable(pc_enable & br_cond), // enable branch , next pc_out = in + 2
+	.incr(fetch),
     .i_addr(pc_in),
-    .pc_out(pc_out),
-	.pc_nxt(pc_nxt)
+    .pc_out(pc_out)
+	//.pc_nxt(pc_nxt)
 );
-
-assign o_mem_addr = mem_sel ? rd2 : pc_in;
+logic br_ahread; // branch discard next bubble
+assign br_ahread = (PCSrc == 1'b0) & br_cond;
+assign o_mem_addr = mem_sel ? rd2 : (br_ahread ? pc_in : pc_out);
 assign o_mem_rd = fetch ? 1'b1 : 1'b0; // todo: read from data mem
 assign opcode = i_mem_rddata[4:0];
 
@@ -90,13 +94,14 @@ opcode_decoder my_control(
 	.ALUSrc(ALUSrc),//0 for rd2, 1 for imm_ext
 	.RegDst(RegDst),// 0 for Rx, 1 for R7
 	.WBSrc(WBSrc),//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
-	.PCSrc(PCSrc),//00 for br, 01 for rind, 10 for pc+2  
+	.PCSrc(PCSrc),//0 for br 1 for pc+2  
+	.BrSrc(BrSrc), // 0 for rd1, 1 for pc + offset
 	.ExtSel(ExtSel), //0 for imm8, 1 for imm11
 	.NZ(NZ), //should update NZ
 	.mem_sel(mem_sel),
 	.BSrc(BSrc),
 	.pc_enable(pc_enable),
-	.BrSrc(br_sel) // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
+	.BrCond(br_sel) // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
 );
 
 
@@ -126,7 +131,7 @@ six_one_mux sel_to_wd
 (
 	.data_in1(mem_in),
 	.data_in2(alu_out),
-	.data_in3(pc_nxt),
+	.data_in3(pc_out),
 	.data_in4(rd2),
 	.data_in5(imm_ext),
 	.data_in6(mvhi_out),
@@ -134,7 +139,7 @@ six_one_mux sel_to_wd
 	.mux_out(wd)
 );
 
-logic br_cond;
+
 four_one_mux #(1) sel_to_br
 (
 	.data_in1(1'b1),
@@ -144,15 +149,13 @@ four_one_mux #(1) sel_to_br
 	.sel(br_sel), // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
 	.mux_out(br_cond)
 );
-assign br = br_cond ? pc_nxt + imm_ext * 2 : pc_nxt; // branch to pc + imm if condition meet
+assign br = br_cond ? ( BrSrc ? pc_out + imm_ext * 2 : rd1 ): pc_out; // branch to pc + imm if condition meet
 
 
-four_one_mux sel_to_pc
+two_one_mux sel_to_pc
 (
-	.data_in1(br),
-	.data_in2(rd1),
-	.data_in3(pc_nxt),
-	.data_in4(16'd0),
+	.data_in1(pc_out),
+	.data_in2(br),
 	.sel(PCSrc),
 	.mux_out(pc_in)
 );
