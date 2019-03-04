@@ -17,7 +17,7 @@ logic [2:0] ws;
 logic [4:0] opcode;
 logic ALUOp;// 0 for add, 1 for sub
 wire RegWrite;// write enable to regitor files
-logic MemWrite; // write enable to mem
+// logic MemWrite; // write enable to mem
 logic ALUSrc;//0 for rd2, 1 for imm_ext
 logic RegDst;// 0 for Rx, 1 for R7
 logic [2:0] WBSrc;//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
@@ -32,12 +32,14 @@ logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
 logic [1:0] br_sel; // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
 logic br_cond;
+logic ld;
 
 logic fetch;
 logic alu_zero, alu_neg;
 reg zero,neg;
 
 reg [2:0] last_rx;
+// reg [15:0] last_rd1;
 assign ws = RegDst ? 3'b111 : (busy ? last_rx : i_mem_rddata[7:5]);
 
 logic [2:0] rs1,rs2;
@@ -64,11 +66,13 @@ gprs_top gprs(
 	.we(RegWrite)				// Reg Write
 );
 
+assign o_mem_wrdata = rd1;
+
 pc my_pc(
     .clk(clk),
     .reset(reset),
     .enable(pc_enable & br_cond), // enable branch , next pc_out = in + 2
-	.incr(fetch & (~busy)),
+	.incr(fetch & (~ld)),
     .i_addr(pc_in),
     .pc_out(pc_out)
 	//.pc_nxt(pc_nxt)
@@ -95,7 +99,7 @@ opcode_decoder my_control(
 	// output signals
 	.ALUOp(ALUOp),// 0 for add, 1 for sub
 	.RegWrite(RegWrite),// write enable to regitor files
-	.MemWrite(MemWrite), // write enable to mem
+	.MemWrite(o_mem_wr), // write enable to mem
 	.ALUSrc(ALUSrc),//0 for rd2, 1 for imm_ext
 	.RegDst(RegDst),// 0 for Rx, 1 for R7
 	.WBSrc(WBSrc),//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
@@ -108,7 +112,8 @@ opcode_decoder my_control(
 	.pc_enable(pc_enable),
 	.fetch(fetch),
 	.BrCond(br_sel), // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
-	.busy(busy)
+	.busy(busy),
+	.ld(ld)
 );
 
 
@@ -179,13 +184,12 @@ alu_16 my_alu(
 
 always_ff @ (posedge clk or posedge reset) begin
 	if(reset) begin
-		last_rx <= 2'b00;
-	end
-	else if (busy) begin
-		last_rx <= last_rx;
+		last_rx <= 3'b000;
+		// last_rd1 <= 16'd0;
 	end
 	else begin
 		last_rx <= i_mem_rddata[7:5];
+		// last_rd1 <= rd1;
 	end
 end
 
