@@ -61,7 +61,7 @@ always_comb begin
             end
         LOAD:
             begin
-                fetch = 1'b1;
+                fetch = 1'b0;
                 nextstate = FETCH;
 				busy = 1'b1;
             end
@@ -90,7 +90,7 @@ always_comb begin
 				ALUSrc = 1'bx;
 				RegDst = 1'b0;
 				WBSrc = 3'b011;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'bx;
 				NZ = 1'b0;
 				mem_sel = 1'b0;
@@ -108,7 +108,7 @@ always_comb begin
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'bx;
 				NZ = 1'b0;
 				mem_sel = 1'b0;
@@ -126,7 +126,7 @@ always_comb begin
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'bx;
 				NZ = 1'b0;
 				mem_sel = 1'b0;
@@ -144,7 +144,7 @@ always_comb begin
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b100;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'b0;
 				NZ = 1'b1;
 				mem_sel = 1'b0;
@@ -162,7 +162,7 @@ always_comb begin
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'bx;
 				NZ = 1'b0;
 				BSrc = 1'b0;
@@ -180,7 +180,7 @@ always_comb begin
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'bx;
 				NZ = 1'b0;
 				BSrc = 1'b0;
@@ -198,7 +198,7 @@ always_comb begin
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b100;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'b0;
 				NZ = 1'b0;
 				mem_sel = 1'b0;
@@ -216,7 +216,7 @@ always_comb begin
 				ALUSrc = 1'b1;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'b0;
 				NZ = 1'b1;
 				mem_sel = 1'b0;
@@ -234,7 +234,7 @@ always_comb begin
 				ALUSrc = 1'b1;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'b0;
 				NZ = 1'b1;
 				mem_sel = 1'b0;
@@ -252,7 +252,7 @@ always_comb begin
 				ALUSrc = 1'b1;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'b0;
 				NZ = 1'b1;
 				mem_sel = 1'b0;
@@ -270,7 +270,7 @@ always_comb begin
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b101;
-				PCSrc = 2'b1;
+				PCSrc = 1'b1;
 				ExtSel = 1'b0;
 				NZ = 1'b0;
 				mem_sel = 1'b0;
@@ -326,8 +326,6 @@ always_comb begin
 				pc_enable = 1'b1;
 				BrCond = 2'b10;
 			end
-			// 5'b01100:begin//callr
-			// end
 			5'b11000:begin//j
 				ALUOp = 1'b0;
 				RegWrite = 1'b1;
@@ -373,9 +371,6 @@ always_comb begin
 				pc_enable = 1'b1;
 				BrCond = 2'b10;
 			end
-			// 5'b11100:begin//call
-
-			// end
 			default: begin
 				ALUOp = 1'b0;
 				RegWrite = 1'b0;
@@ -383,7 +378,7 @@ always_comb begin
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
-				PCSrc = 2'b11;
+				PCSrc = 2'b1;
 				ExtSel = 1'bx;
 				NZ = 1'b0;
 				BSrc = 1'b0;
@@ -403,7 +398,7 @@ always_comb begin
 		ALUSrc = 1'b0;
 		RegDst = 1'b0;
 		WBSrc = 3'b000;
-		PCSrc = 2'b10;
+		PCSrc = 1'b1;
 		ExtSel = 1'bx;
 		NZ = 1'b0;
 		BSrc = 1'b0;
@@ -422,7 +417,7 @@ always_comb begin
 		ALUSrc = 1'b0;
 		RegDst = 1'b0;
 		WBSrc = 3'b001;
-		PCSrc = 2'b10;
+		PCSrc = 1'b1;
 		ExtSel = 1'bx;
 		NZ = 1'b0;
 		BSrc = 1'b0;
