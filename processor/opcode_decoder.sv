@@ -241,6 +241,7 @@ always_comb begin
 			ExtSel = 1'b1;
 			NZ = 1'b0;
 			mem_sel = 1'b0;
+			pc_enable = 1'b0;
 			BrCond = 2'b0;
         end
         5'b11001:begin//jz
@@ -267,6 +268,21 @@ always_comb begin
 			WBSrc = 3'b100;
 			PCSrc = 1'b0;
 			BrSrc = 1'b1;
+			ExtSel = 1'b1;
+			NZ = 1'b0;
+			mem_sel = 1'b0;
+			pc_enable = 1'b1;
+			BrCond = 2'b10;
+        end
+        5'b01100:begin//callr
+			ALUOp = 1'b0;
+			RegWrite = 1'b1;
+			MemWrite = 1'b0;
+			ALUSrc = 1'b0;
+			RegDst = 1'b1;
+			WBSrc = 3'b011;
+			PCSrc = 1'b0;
+			BrSrc = 1'b0;
 			ExtSel = 1'b1;
 			NZ = 1'b0;
 			mem_sel = 1'b0;
