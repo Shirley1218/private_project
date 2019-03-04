@@ -26,14 +26,16 @@ logic ExtSel; //0 for imm8, 1 for imm11
 logic NZ; //should update NZ
 logic pc_enable; // enable pc_increment
 logic BSrc;// 0 for rd2, 1 for imm_ext
+logic busy;//loading or storing, use old rx
 logic [15:0] rd1, rd2, pc_out,wd,pc_nxt, imm_ext, pc_in, br, alu_out;
 logic mem_sel;//0 for reading instruction, 1 for reading other memory
-
 logic fetch;
 logic alu_zero, alu_neg;
 reg zero,neg;
 
-assign ws = RegDst ? 3'b111 : i_mem_rddata[7:5] ;
+reg [2:0] last_rx;
+assign ws = RegDst ? 3'b111 : (busy ? last_rx : i_mem_rddata[7:5]);
+
 logic [2:0] rs1,rs2;
 assign rs1 = i_mem_rddata[7:5];
 assign rs2 = i_mem_rddata[10:8];
@@ -72,13 +74,15 @@ assign o_mem_rd = fetch ? 1'b1 : 1'b0; // todo: read from data mem
 assign br = pc_nxt + imm_ext * 2;
 assign opcode = i_mem_rddata[4:0];
 
-non_pipelined_state fsm(
-	.clk(clk),
-    .reset(reset),
-    .fetch(fetch)
-);
+// non_pipelined_state fsm(
+// 	.clk(clk),
+//     .reset(reset),
+//     .fetch(fetch)
+// );
 
 opcode_decoder my_control(
+	.clk(clk),
+	.reset(reset),
 
 	//input opcode
 	.opcode(opcode),
@@ -95,7 +99,9 @@ opcode_decoder my_control(
 	.NZ(NZ), //should update NZ
 	.mem_sel(mem_sel),
 	.BSrc(BSrc),
-	.pc_enable(pc_enable)
+	.pc_enable(pc_enable),
+	.fetch(fetch),
+	.busy(busy)
 );
 
 
@@ -154,7 +160,17 @@ alu_16 my_alu(
 );
 
 
-
+always_ff @ (posedge clk or posedge reset) begin
+	if(reset) begin
+		last_rx <= 2'b00;
+	end
+	else if (busy) begin
+		last_rx <= last_rx;
+	end
+	else begin
+		last_rx <= i_mem_rddata[7:5];
+	end
+end
 
 
 

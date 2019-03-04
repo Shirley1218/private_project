@@ -3,7 +3,7 @@ module pc (
     input reset,
     input enable,
 	input [15:0] i_addr,
-    output logic [15:0] pc_out,
+    output reg [15:0] pc_out,
     output [15:0] pc_nxt
 );
 
