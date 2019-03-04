@@ -2,7 +2,8 @@
 // This is the control module for cpu
 // It takes a 5-bit opcode and set the coresponding control signal
 module opcode_decoder(
-
+	input clk,
+	input reset,
 	//input opcode
 	input [4:0] opcode,
 	
@@ -22,6 +23,23 @@ module opcode_decoder(
 	output logic pc_enable,
 	output logic [1:0] BrCond // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
 );
+enum int unsigned
+{
+    IDLE,
+    FETCH,
+    LOAD,
+    STORE1,
+	STORE2
+} state, nextstate;
+
+logic ld, st;
+// Clocked always block for making state registers
+always_ff @ (posedge clk or posedge reset) begin
+	if (reset) state <= IDLE;
+	else if (ld) state <= LOAD;
+	else if (st) state <= STORE1;
+	else state <= nextstate;
+end
 
 always_comb begin
     case(opcode)
