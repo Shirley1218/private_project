@@ -68,7 +68,7 @@ pc my_pc(
     .clk(clk),
     .reset(reset),
     .enable(pc_enable & br_cond), // enable branch , next pc_out = in + 2
-	.incr(fetch),
+	.incr(fetch & (~busy)),
     .i_addr(pc_in),
     .pc_out(pc_out)
 	//.pc_nxt(pc_nxt)
@@ -106,7 +106,9 @@ opcode_decoder my_control(
 	.mem_sel(mem_sel),
 	.BSrc(BSrc),
 	.pc_enable(pc_enable),
-	.BrCond(br_sel) // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
+	.fetch(fetch),
+	.BrCond(br_sel), // 0 = always br(no condition) , 1 = branch if Z == 1, 2 = branch if N == 1
+	.busy(busy)
 );
 
 
