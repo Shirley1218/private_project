@@ -31,7 +31,7 @@ enum int unsigned
     IDLE,
     FETCH,
     LOAD,
-    STORE1,
+    STORE,
 	STORE2
 } state, nextstate;
 
@@ -39,8 +39,8 @@ logic st;
 // Clocked always block for making state registers
 always_ff @ (posedge clk or posedge reset) begin
 	if (reset) state <= IDLE;
+	else if (st) state <= STORE;//do not chage the order here
 	else if (ld) state <= LOAD;
-	else if (st) state <= STORE1;
 	else state <= nextstate;
 end
 
@@ -63,12 +63,12 @@ always_comb begin
                 fetch = 1'b1;
                 nextstate = FETCH;
             end
-        STORE1:
-            begin
-                fetch = 1'b0;
-                nextstate = STORE2;
-            end
-		STORE2:
+        // STORE1:
+        //     begin
+        //         fetch = 1'b0;
+        //         nextstate = STORE2;
+        //     end
+		STORE:
             begin
                 fetch = 1'b0;
                 nextstate = FETCH;
@@ -177,7 +177,7 @@ always_comb begin
 			5'b00101:begin//st
 				ALUOp = 1'b0;
 				RegWrite = 1'b0;
-				MemWrite = 1'b0;
+				MemWrite = 1'b1;
 				ALUSrc = 1'b0;
 				RegDst = 1'b0;
 				WBSrc = 3'b001;
@@ -185,13 +185,13 @@ always_comb begin
 				ExtSel = 1'bx;
 				NZ = 1'b0;
 				BSrc = 1'b0;
-				mem_sel = 1'b0;
+				mem_sel = 1'b1;
 				pc_enable = 1'b0;
-				ld = 1'b0;
+				ld = 1'b1;//intended to do this
 				st = 1'b1;
 				BrSrc = 1'b0;
 				BrCond = 2'b00;
-				busy = 1'b1;
+				busy = 1'b0;
 			end
 			5'b10000:begin//mvi
 				ALUOp = 1'b0;
@@ -428,6 +428,26 @@ always_comb begin
 		BrSrc = 1'b0;
 		BrCond = 2'b00;
 		busy = 1'b1;
+	end
+
+	else if (state == STORE) begin
+		ALUOp = 1'b0;
+		RegWrite = 1'b0;
+		MemWrite = 1'b0;
+		ALUSrc = 1'b0;
+		RegDst = 1'b0;
+		WBSrc = 3'b000;
+		PCSrc = 1'b1;
+		ExtSel = 1'bx;
+		NZ = 1'b0;
+		BSrc = 1'b0;
+		mem_sel = 1'b0;
+		pc_enable = 1'b0;
+		ld = 1'b0;
+		st = 1'b0;
+		BrSrc = 1'b0;
+		BrCond = 2'b00;
+		busy = 1'b0;
 	end
 
 	else begin 

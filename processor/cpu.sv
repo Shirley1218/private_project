@@ -17,7 +17,7 @@ logic [2:0] ws;
 logic [4:0] opcode;
 logic ALUOp;// 0 for add, 1 for sub
 wire RegWrite;// write enable to regitor files
-logic MemWrite; // write enable to mem
+// logic MemWrite; // write enable to mem
 logic ALUSrc;//0 for rd2, 1 for imm_ext
 logic RegDst;// 0 for Rx, 1 for R7
 logic [2:0] WBSrc;//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
@@ -39,6 +39,7 @@ logic alu_zero, alu_neg;
 reg zero,neg;
 
 reg [2:0] last_rx;
+// reg [15:0] last_rd1;
 assign ws = RegDst ? 3'b111 : (busy ? last_rx : i_mem_rddata[7:5]);
 
 logic [2:0] rs1,rs2;
@@ -64,6 +65,8 @@ gprs_top gprs(
 	// Control signal
 	.we(RegWrite)				// Reg Write
 );
+
+assign o_mem_wrdata = rd1;
 
 pc my_pc(
     .clk(clk),
@@ -96,7 +99,7 @@ opcode_decoder my_control(
 	// output signals
 	.ALUOp(ALUOp),// 0 for add, 1 for sub
 	.RegWrite(RegWrite),// write enable to regitor files
-	.MemWrite(MemWrite), // write enable to mem
+	.MemWrite(o_mem_wr), // write enable to mem
 	.ALUSrc(ALUSrc),//0 for rd2, 1 for imm_ext
 	.RegDst(RegDst),// 0 for Rx, 1 for R7
 	.WBSrc(WBSrc),//000 for memory, 001 for alu output, 010 for pc+2, 011 for [Ry], 100 for imm8
@@ -182,9 +185,11 @@ alu_16 my_alu(
 always_ff @ (posedge clk or posedge reset) begin
 	if(reset) begin
 		last_rx <= 3'b000;
+		// last_rd1 <= 16'd0;
 	end
 	else begin
 		last_rx <= i_mem_rddata[7:5];
+		// last_rd1 <= rd1;
 	end
 end
 
